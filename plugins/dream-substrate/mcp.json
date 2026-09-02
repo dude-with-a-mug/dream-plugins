@@ -1,0 +1,9 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "dream": {
+      "type": "streamable-http",
+      "url": "https://dream-30pu.onrender.com/v1/mcp"
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "dream",
+  "description": "Dream's own plugins — the connection between a code repo and the idea it implements.",
+  "version": "0.1.0",
+  "owner": {
+    "name": "Dream",
+    "url": "https://dreamluci.com"
+  },
+  "plugins": [
+    {
+      "name": "dream-substrate",
+      "source": "./plugins/dream-substrate",
+      "description": "Connect a repo to its Dream idea: the hosted `dream` MCP door plus the substrate participation doctrine. Bind a repo to an idea, orient from the task board, read the idea's reasoning before you build, and contribute back through proposals, tasks, branches, and the commit ceremony.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Dream",
+        "url": "https://dreamluci.com"
+      },
+      "homepage": "https://dreamluci.com",
+      "repository": "https://github.com/dude-with-a-mug/dream-plugins",
+      "category": "productivity",
+      "keywords": [
+        "dream",
+        "knowledge-graph",
+        "substrate",
+        "mcp",
+        "spec-driven-development"
+      ]
+    }
+  ]
+}

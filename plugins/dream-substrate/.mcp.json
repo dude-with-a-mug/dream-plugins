@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "dream": {
+      "type": "http",
+      "url": "https://dream-30pu.onrender.com/v1/mcp"
+    }
+  }
+}
