@@ -1,19 +1,30 @@
 {
   "name": "dream-substrate",
-  "version": "0.1.0",
-  "description": "Connect a repo to its Dream idea: the hosted `dream` MCP door plus the substrate participation doctrine. Bind a repo to an idea, orient from the task board, read the idea's reasoning before you build, and contribute back through proposals, tasks, branches, and the commit ceremony.",
+  "version": "0.1.3",
+  "description": "Connect work to its Dream idea: read grounded reasoning, preserve consequential discoveries, and reconcile understanding within the user’s delegated goals.",
   "author": {
     "name": "Dream",
     "url": "https://dreamluci.com"
   },
   "homepage": "https://dreamluci.com",
   "repository": "https://github.com/dude-with-a-mug/dream-plugins",
-  "hooks": "./hooks/hooks.json",
   "interface": {
     "displayName": "Dream",
-    "shortDescription": "The reasoning behind your code, reachable from your agent.",
+    "logo": "./assets/dream-logo.svg",
+    "logoDark": "./assets/dream-logo-dark.svg",
+    "composerIcon": "./assets/dream-composer-icon.svg",
+    "shortDescription": "The reasoning behind your idea, reachable from your agent.",
     "developerName": "Dream",
-    "category": "Productivity",
-    "websiteURL": "https://dreamluci.com"
+    "category": "Context Management",
+    "websiteURL": "https://dreamluci.com",
+    "longDescription": "Connect your coding agent to Dream’s shared knowledge graph. Read grounded context, contribute discoveries, and publish files through the existing MCP login.",
+    "defaultPrompt": [
+      "Tell me the story behind this idea and what the team's working on"
+    ],
+    "capabilities": [
+      "Sharable context",
+      "Contribute work",
+      "Knowledge graph"
+    ]
   }
 }

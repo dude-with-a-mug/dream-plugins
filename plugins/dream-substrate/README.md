@@ -2,7 +2,7 @@
 
 The plugin is the box the connection ships in. One directory carrying the
 **skill** (doctrine), the **MCP server reference** (capability), and a
-**SessionStart hook** (ambient orientation) — installed once, instead of a
+**optional SessionStart hook** (ambient orientation) — installed once, instead of a
 two-step "add the server, then copy the skill" ritual.
 
 A repo holds the code. Dream holds the idea behind it — what it is, what's
@@ -40,8 +40,8 @@ marketplace root for Claude Code, `.agents/plugins/marketplace.json` beside it
 for Codex, both listing the same entry; `dream-substrate` is the plugin. The
 marketplace repo is a published artifact, not a source: a release workflow in
 Dream's private source repo copies `plugins/dream-substrate/` and the two
-marketplace manifests into it on every `plugin-v*` tag, so marketplace-installed
-plugins pick up updates when a release lands. Inside a checkout of the source
+marketplace manifests into it on every merge that changes the package, so
+marketplace-installed plugins pick up updates when a release lands. Inside a checkout of the source
 repo, `/plugin marketplace add ./` works against the working tree in either
 harness.
 
@@ -69,8 +69,9 @@ shows them as **Verified**. A browser opens on dreamluci.com. If you are signed 
 (password or Google — either returns you to the request). The consent page
 names the agent asking, whether Dream recognises it, where the authorization
 will be delivered ("this computer" for a CLI), and the scopes it wants —
-`read` always, `contribute` pre-ticked when requested, `merge` never
-pre-ticked. Give the connection a label (it is the attribution on every
+`read` always and `contribute` pre-ticked when requested. Contribution
+includes owner approval and merges when Dream's branch rules permit them.
+Give the connection a label (it is the attribution on every
 proposal the agent makes), click **Allow**, and the terminal reports the
 server connected.
 
@@ -101,49 +102,51 @@ like a token or an unexpanded placeholder.
 
 | Component | File | What it does |
 |---|---|---|
-| Skill | `skills/dream-substrate/SKILL.md` | Latent in every session; loads at Dream-relevant moments (binding a repo, starting a task, hitting a decision the idea may own, discovering the spec was wrong). Carries the participation doctrine. |
+| Skill metadata | `skills/dream/SKILL.md` frontmatter | Available for discovery; describes when Dream participation helps. |
+| Skill body | `skills/dream/SKILL.md` | Loaded on activation: shared participation policy and conditional workflow routing. |
+| References | `skills/dream/references/*.md` | Setup, reading, contributing, publishing, and reviewing are loaded only when the current task needs them. |
 | MCP server | `.mcp.json` (Claude Code) / `mcp.json` (Agent Plugins, which is what Codex reads) | Registers `dream` as a remote HTTP MCP server at `https://dream-30pu.onrender.com/v1/mcp`. No credential: the door's 401 challenge starts the OAuth sign-in (`claude mcp login dream` / `codex mcp login dream`). |
-| Hook | `hooks/hooks.json` → `hooks/session-start.sh` | On SessionStart, prints one line naming the bound idea and door — and prints nothing at all in a repo that is not bound to a Dream idea. Same hooks file and event schema in both harnesses. |
+| Hook | `hooks/hooks.json` → `hooks/session-start.sh` | On SessionStart, prints a non-secret declaration hint, without claiming that the active connection is bound — and prints nothing at all in a repo that is not bound to a Dream idea. Uses the shared optional hook file where the client supports and trusts it. |
 
 All three are discovered from their default locations, so the Claude Code
 manifest declares metadata only — no `skills` / `hooks` / `mcpServers` path
 fields. Adding them would be redundant, and the `commands`/`agents` variants of
-those fields *replace* the defaults rather than adding to them. The Codex
-overlay (below) is the one manifest that names the hooks file, because it is
-where Codex looks for hooks on an Agent Plugins package.
+those fields *replace* the defaults rather than adding to them. Codex also discovers the standard `hooks/hooks.json` location; the overlay
+only carries display metadata. This keeps the package compatible with both
+runtime discovery and the stricter local manifest validator.
 
-**Where doctrine actually lives.** The MCP server's own `instructions`, sent at
-every connection, are the authoritative participation doctrine. The skill is a
-delivery vehicle and can be months stale; where the two disagree, the server
-wins. That is deliberate — an agent running an outdated plugin still
-participates under current doctrine.
+**Policy ownership.** `backend/dream/core/doctrine/participation.md` in the
+source repo owns the shared participation policy. The skill carries a bounded
+verbatim excerpt checked against the runtime loader; the server and Luci use
+that same policy. Current server guidance governs an older plugin. Individual
+tools describe immediate effects, prerequisites, handles, and recovery, so
+correct use does not require installing the skill.
 
-### The hook, precisely
+Initialization instructions arrive at connection setup. Tool descriptions and
+schemas load according to the host's eager/deferred discovery behavior. The
+complete catalogue size is not a claim about startup or task context. Reports
+should count metadata, activated body, selected references, actual rendered
+tool schemas (including wrappers), and responses separately.
 
-It runs at the start of **every** session in **every** repo, because the plugin
-installs globally. So it is deliberately boring:
+### The optional hook
 
-1. Resolve the working directory from `CLAUDE_PROJECT_DIR` (falling back to
-   `PWD`).
-2. If `.mcp.json` there carries an `X-Dream-Idea` header, take that id and the
-   `…/v1/mcp` door URL from it.
-3. Otherwise, if `.codex/config.toml` there carries the same header (inline
-   `http_headers = { … }` or its own `[mcp_servers.dream.http_headers]`
-   table), take the id and the `url = "…/v1/mcp"` from that.
-4. Otherwise, if `CLAUDE.md`, `AGENTS.md`, or `.claude/CLAUDE.md` carries the
-   Dream binding breadcrumb, take the id (and door) from that.
-5. Validate both against a character set that cannot contain a token, an
-   unexpanded `${VAR}`, or whitespace; refuse to print a line containing
-   `Bearer`, `dream_pat_`, or `${`.
-6. Print one line, or nothing.
+The hook reads from `CLAUDE_PROJECT_DIR`, falling back to the process working
+directory. It checks `.mcp.json` and `.codex/config.toml` for an `X-Dream-Idea`
+declaration, then `CLAUDE.md`, `AGENTS.md`, and `.claude/CLAUDE.md` for an idea
+breadcrumb. It prints one constant hint when a declaration is present and
+nothing otherwise. It does not parse or echo IDs, URLs, credentials, or file
+contents, and does not verify authentication or the effective connection.
 
-No network calls, no writes, no secrets, and it always exits `0` — a session
-never fails because of this hook. Silence is the normal case: an unbound repo
-produces no output. Claude Code adds a SessionStart hook's stdout to the model's
-context on exit 0, which is the only reason it prints at all. Codex runs plugin
-hooks from the same `hooks/hooks.json` with the same event schema and provides
-`CLAUDE_PLUGIN_ROOT` for compatibility; it does not set `CLAUDE_PROJECT_DIR`,
-so there the hook reads the directory it is run in.
+There are no network calls or writes, and the hook exits successfully. Hook
+trust and execution depend on the client; installation alone does not make a
+hook trusted. The same skill and tools remain usable if the hook is unavailable,
+untrusted, or disabled. Its hint is never an ingestion or synchronization
+trigger. Validate the active binding at setup/reconnect through `dream_context`,
+not from the hint.
+
+Package layout tests and manifest validation establish portable packaging;
+they do not prove identical hooks, deferred loading, or runtime task behavior
+across clients. Record the tested client/version and observed loading separately.
 
 ## Three manifests, two marketplaces
 
@@ -157,8 +160,7 @@ in Claude Code, in Codex, and in other Agent-Plugins-compatible harnesses:
   makes Codex treat the directory as an Agent Plugins package — skills from
   `skills/`, servers from `mcp.json`.
 - `.codex-plugin/plugin.json` — Codex's overlay on the Agent Plugins manifest.
-  Codex takes only `hooks`, `apps`, and `interface` (display name, category)
-  from it; `skills` and `mcpServers` come from the Agent Plugins layout and
+  This package supplies `interface` (display name, category) through it; `skills` and `mcpServers` come from the Agent Plugins layout and
   are deliberately absent here.
 
 The Claude Code manifest and the Agent Plugins manifest each have their own
@@ -178,10 +180,11 @@ credential; the door's 401 on first use starts the sign-in). Both name the
 marketplace `dream` and list `dream-substrate` at `./plugin`; the manifest test
 holds them to that.
 
-### Verified against live docs
+### Packaging references
 
-Every field in every manifest here was checked against the current published
-schema or reference, not written from memory:
+These sources document the package layout and client-specific fields. They are
+reference links, not a claim that every client runtime was exercised on this
+checkout:
 
 | File | Source |
 |---|---|
@@ -208,8 +211,10 @@ schema or reference, not written from memory:
   Anthropic's own bundled marketplace manifest uses. The docs describe the field
   as being for editor autocomplete and validation (and explicitly ignored at
   load time for `marketplace.json`), so it is advisory — but both documents
-  validate against their published schema, and `claude plugin validate` passes
-  on the plugin directory and on the repo root.
+  are covered by package checks. Claude Code 2.1.260 `plugin validate` passes
+  on the plugin directory and on a temporary copied installation. Codex
+  0.153.2 has no offline plugin-validation command; filesystem/manifest tests
+  cover its declared layout, not authenticated clean-install behavior.
 
 ## Runbook: the door origin
 
@@ -223,3 +228,24 @@ protected-resource metadata document.
 Moving the API behind a custom domain means changing three things in the same
 deploy — `api_public_origin` in `config.prod.yaml`, `.mcp.json`, and `mcp.json`
 — or every connected agent's resource identifier goes stale.
+
+
+## Artifact files (Python 3)
+
+The package includes `scripts/artifact_upload.py`; it uses Python 3's standard
+library and installs no dependencies. The existing MCP login supplies all
+Dream authorization. Inspect a selected file, reserve through
+`reserve_artifact_upload`, transfer with the helper, then `publish_artifact`.
+The helper never reads OAuth credentials or a PAT. See [publishing guidance](skills/dream/references/publishing.md) for
+the exact stdin/0600-file recipe and installed-package-relative helper path. Signed upload URLs are credentials; do not print them.
+Images, Markdown specs, and portable HTML share this flow. Supply a local
+screenshot for an HTML preview; external HTML is not rendered by Dream's server.
+
+At installation or reconnect, call `dream_context` without `idea` and verify
+its resolved idea. Use `.mcp.json` for Claude Code and `.codex/config.toml`
+`http_headers` for Codex. Check pre-existing server overrides when declarations
+and the active connection disagree. A SessionStart hint only detects a
+configuration declaration; it does not verify authentication or routing.
+
+Artifact publication prevents duplicate absorption across artifact formats. Same-format
+semantic deduplication is unchanged and is not proof of byte equivalence.
