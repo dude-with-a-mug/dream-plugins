@@ -8,7 +8,7 @@
       "name": "dream-substrate",
       "source": "./plugins/dream-substrate",
       "description": "Connect a repo to its Dream idea: the hosted `dream` MCP door plus the substrate participation doctrine. Bind a repo to an idea, orient from the task board, read the idea's reasoning before you build, and contribute back through proposals, tasks, branches, and the commit ceremony.",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "category": "Productivity",
       "policy": {
         "installation": "AVAILABLE",
