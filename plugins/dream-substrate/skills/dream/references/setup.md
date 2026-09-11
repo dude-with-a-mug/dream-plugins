@@ -23,9 +23,8 @@ connection identity. Reuse verified information already present:
 2. Otherwise call `dream_ideas` for visible ideas and roles. Ask which idea the
    repo belongs to only when the user's intent does not already identify it.
 3. For authorized setup, write the binding, reconnect as needed, verify, and
-   briefly confirm the resolved idea and work destination. Directed work runs
-   on a task branch: reuse a suitable one, or capture the task and start its
-   branch with `start_task_branch`, which returns the branch and grounding.
+   briefly confirm the resolved idea and work destination. Tasks do not require branches. When work needs a reasoning branch, reuse
+   a suitable one or use `start_task_branch` after reading its task.
    Main may be used for reading; obtain a permitted working branch before
    contributing where branch protection requires it.
 

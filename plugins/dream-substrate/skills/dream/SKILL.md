@@ -49,15 +49,19 @@ participation must work when the hook is unavailable or untrusted.
 
 ## Turn the request into useful work
 
-Tasks are the ledger of all directed work. When the user expresses intent to
-build, change, or explore something, capture it as a task the moment it is
-expressed and start its branch in the same beat with `start_task_branch`; the
-expressed intent is the yes, so never ask a second time. Reuse an existing task
-or a suitable working branch when one already covers the request. Do not create
-a task to answer a question or satisfy orientation. For an explicit task with
-known grounding, continue from that context; refresh only when scope or branch
-state changes. Capture unrelated work you notice as a task and keep going; a
-branch is for the directed work.
+Tasks record intended outcomes. Capture requested work as a task; reuse an
+existing task when it already covers the outcome. Use `set_task_status` with
+the version from `get_task` to keep Open, In progress, Review, and Done accurate
+under the user's authorized intent. Review means work ready for feedback;
+mark Done when its intended outcome has been achieved. No second confirmation
+is needed when the user's intent is clear. Branch activity never changes task
+status automatically. A task can be completed without a Dream branch.
+
+Start a task branch only when the work needs its own reasoning exploration or
+the user requests one. Read `get_task` before `start_task_branch` and preserve
+its starting-point facts. Completing a task leaves existing branches usable;
+reopen completed work with `set_task_status` before starting a new branch.
+Cancellation remains separate; `reopen_task` restores the saved status.
 
 Name a branch after the direction it explores: a short human-readable noun
 phrase with spaces ("Poncho Bert", "Chef Bert", "Sandbox ruling"), never a
@@ -69,9 +73,7 @@ A branch has two verbs after it opens. `update_branch` renames or re-purposes
 the branch you are standing in; the slug and URL never change, main cannot be
 renamed, and a merged branch is frozen. `close_branch` puts a branch away and
 needs a reason: a branch that never committed is deleted, one with Commits is
-archived with its Commits still readable. Closing the last live branch on a
-task returns the task to Open; say so and offer `cancel_task` if the direction
-itself is dead, never cancel unprompted. Cancelling a task never closes its
+archived with its Commits still readable. Closing a branch leaves its task status unchanged. Never cancel a task unprompted. Cancelling a task never closes its
 branches. Reopening a closed branch is done from the web app.
 
 People are handles. `list_members` lists the idea's roster as

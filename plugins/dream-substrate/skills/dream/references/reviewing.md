@@ -68,8 +68,8 @@ valid approval of the new current head before merging.
 
 Read the receipt and `get_merge_digest`. Explain what was incorporated, what
 it means, any outstanding contradictions or incomplete coverage, and completed
-or unblocked tasks. A task reaches Done when a branch carrying it merges
-outside its family; a branch commit is insufficient. Reading the digest does
+or unblocked tasks. A merge does not change task status. Use `set_task_status` to mark Done when
+the intended outcome has been achieved; otherwise leave the task in its appropriate status. Reading the digest does
 not mark it read—the user controls that acknowledgment.
 
 ## Analysis recovery

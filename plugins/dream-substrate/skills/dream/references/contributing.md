@@ -6,16 +6,12 @@ current call contract.
 
 ## Prepare a coherent contribution
 
-Directed work starts from its task: `create_task` captures the intent, and
-`start_task_branch` starts the branch in the same beat, with no chat thread
-and nothing else created. Reuse the task's suitable working branch and relevant
-pending proposals when they already exist; read `get_task` when the starter
-prompt or existing context is needed. Name the branch after the direction as a
-short noun phrase with spaces ("Poncho Bert"), never a slug or a to-do verb
-phrase. Keep related discoveries together; changing a session alone does not
-warrant another branch. A nominee on `create_task` / `update_task` is a handle
-from `list_members`, never an id, and a nomination is an invitation rather
-than an assignment.
+Capture directed work as a task and set its status explicitly under the
+user's intent. Create a task branch only for reasoning that needs its own
+exploration; external execution and routine fixes do not require one. Reuse
+suitable tasks and branches. Read `get_task` before starting a branch and
+preserve its authoritative starting point. Status changes require the current
+`status_version`; refresh after a conflict rather than overwriting newer work.
 
 `update_branch(name?, purpose?)` renames or re-purposes the branch the call is
 standing in. Author or idea owner only; main cannot be renamed; a merged
@@ -68,8 +64,7 @@ changes nothing.
 
 Tasks and branches stay decoupled both ways. Cancelling a task leaves its
 branches open, because one of them may be someone else's; closing a branch
-never cancels its task. When the branch you close was the task's last live
-branch, the task returns to Open and takeable — say so, and offer
+never cancels its task. Closing the last live branch leaves task status unchanged. Offer
 `cancel_task` only if the direction itself is dead. Reopening a closed branch
 is done from the web app.
 
