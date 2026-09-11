@@ -67,10 +67,11 @@ work remains uncommitted or unsupported staged work has escaped review.
 valid approval of the new current head before merging.
 
 Read the receipt and `get_merge_digest`. Explain what was incorporated, what
-it means, any outstanding contradictions or incomplete coverage, and completed
-or unblocked tasks. A merge does not change task status. Use `set_task_status` to mark Done when
-the intended outcome has been achieved; otherwise leave the task in its appropriate status. Reading the digest does
-not mark it read—the user controls that acknowledgment.
+it means, and any outstanding contradictions or incomplete coverage. A merge
+does not change task status: if the merged work achieved a task's intended
+outcome, mark it Done with `set_task_status`; otherwise leave its status as it
+is. Reading the digest does not mark it read—the user controls that
+acknowledgment.
 
 ## Analysis recovery
 

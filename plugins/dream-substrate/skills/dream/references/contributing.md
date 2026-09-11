@@ -7,11 +7,10 @@ current call contract.
 ## Prepare a coherent contribution
 
 Capture directed work as a task and set its status explicitly under the
-user's intent. Create a task branch only for reasoning that needs its own
-exploration; external execution and routine fixes do not require one. Reuse
-suitable tasks and branches. Read `get_task` before starting a branch and
-preserve its authoritative starting point. Status changes require the current
-`status_version`; refresh after a conflict rather than overwriting newer work.
+user's intent. Reuse suitable tasks and branches. Read `get_task` before
+starting a branch and preserve its authoritative starting point. Status changes
+require the current `status_version`; refresh after a conflict rather than
+overwriting newer work.
 
 `update_branch(name?, purpose?)` renames or re-purposes the branch the call is
 standing in. Author or idea owner only; main cannot be renamed; a merged
@@ -48,9 +47,9 @@ the board first so a second task does not restate the first. When you stop
 with a task's work unfinished, update its summary with `update_task` so where
 it stands is recorded rather than lost. Reorganize existing tasks,
 dependencies, cancellations, or reopened work only when directed; cancellations
-need a reason so a deferred direction remains legible. Publish useful local artifacts through the
-publishing guidance when ready; the resulting proposals belong with the
-reasoning that supports them.
+need a reason so a deferred direction remains legible. Publish useful local
+artifacts through the publishing guidance when ready; the resulting proposals
+belong with the reasoning that supports them.
 
 ## Put a branch away
 
@@ -64,9 +63,9 @@ changes nothing.
 
 Tasks and branches stay decoupled both ways. Cancelling a task leaves its
 branches open, because one of them may be someone else's; closing a branch
-never cancels its task. Closing the last live branch leaves task status unchanged. Offer
-`cancel_task` only if the direction itself is dead. Reopening a closed branch
-is done from the web app.
+never cancels its task. Closing the last live branch leaves task status
+unchanged. Offer `cancel_task` only if the direction itself is dead. Reopening
+a closed branch is done from the web app.
 
 ## Commit the reviewed bundle
 

@@ -50,17 +50,25 @@ participation must work when the hook is unavailable or untrusted.
 ## Turn the request into useful work
 
 Tasks record intended outcomes. Capture requested work as a task; reuse an
-existing task when it already covers the outcome. Use `set_task_status` with
-the version from `get_task` to keep Open, In progress, Review, and Done accurate
-under the user's authorized intent. Review means work ready for feedback;
-mark Done when its intended outcome has been achieved. No second confirmation
-is needed when the user's intent is clear. Branch activity never changes task
-status automatically. A task can be completed without a Dream branch.
+existing task when it already covers the outcome. Do not create a task to
+answer a question or satisfy orientation. For an explicit task with known
+grounding, continue from that context; refresh only when scope or branch state
+changes. Capture unrelated work you notice as a task and keep going.
 
-Start a task branch only when the work needs its own reasoning exploration or
-the user requests one. Read `get_task` before `start_task_branch` and preserve
-its starting-point facts. Completing a task leaves existing branches usable;
-reopen completed work with `set_task_status` before starting a new branch.
+Use `set_task_status` with the version from `get_task` to keep Open, In
+progress, Review, and Done accurate under the user's authorized intent. Review
+means work ready for feedback; mark Done when its intended outcome has been
+achieved. No second confirmation is needed when the user's intent is clear.
+Branch activity never changes task status automatically. A task can be
+completed without a Dream branch.
+
+When the work teaches something worth keeping — a decision, tradeoff, changed
+assumption, or open question — start or reuse a branch on that task at that
+moment and propose there, never on Main (a proposal with no branch named lands
+on Main). Start one too when the work needs its own reasoning exploration or
+the user asks. Read `get_task` before `start_task_branch` and preserve its
+starting-point facts. Completing a task leaves existing branches usable; reopen
+completed work with `set_task_status` before starting a new branch.
 Cancellation remains separate; `reopen_task` restores the saved status.
 
 Name a branch after the direction it explores: a short human-readable noun
@@ -73,8 +81,10 @@ A branch has two verbs after it opens. `update_branch` renames or re-purposes
 the branch you are standing in; the slug and URL never change, main cannot be
 renamed, and a merged branch is frozen. `close_branch` puts a branch away and
 needs a reason: a branch that never committed is deleted, one with Commits is
-archived with its Commits still readable. Closing a branch leaves its task status unchanged. Never cancel a task unprompted. Cancelling a task never closes its
-branches. Reopening a closed branch is done from the web app.
+archived with its Commits still readable. Closing a branch leaves its task
+status unchanged; offer `cancel_task` only if the direction itself is dead, and
+never cancel unprompted. Cancelling a task never closes its branches. Reopening
+a closed branch is done from the web app.
 
 People are handles. `list_members` lists the idea's roster as
 `{handle, name, role, is_you}`; `is_you` is how you learn your own handle, and
