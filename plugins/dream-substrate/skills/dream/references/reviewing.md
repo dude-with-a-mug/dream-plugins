@@ -28,7 +28,7 @@ meaning; preview is available. Preserve uncertainty where evidence does not
 settle the choice.
 
 When the staged review bundle is ready, `prepare_commit` supplies its
-`commit_draft_id`, `commit_draft_version`, and actual `bundle`. Inspect every
+`commit_draft_id`, `review_stamp`, and actual `bundle`. Inspect every
 member's actual payload, including cluster reconciliation. Read known draft
 IDs in narrow batches using `search_proposals` with this shape, replacing the
 example proposal and MR IDs:
@@ -45,8 +45,8 @@ then inspect known IDs in smaller full-detail batches. Reconcile unique
 inspected IDs with the draft total and every returned draft ID; incomplete
 coverage is not permission to commit. Curate unrelated or unsupported entries
 and prepare again after any changes. `commit_changes` must carry the returned
-`commit_draft_id`, mapping returned `commit_draft_version` to
-`expected_draft_version`. A conflict requires a fresh read and prepare; never
+`commit_draft_id`, mapping returned `review_stamp` to
+`expected_review_stamp`. A conflict requires a fresh read and prepare; never
 reuse an old stamp or claim another session's commit.
 
 ## Incorporate and explain the result

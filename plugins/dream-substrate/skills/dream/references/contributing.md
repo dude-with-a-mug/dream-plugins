@@ -29,13 +29,18 @@ not establish grounding.
 
 Distinguish a deliberate policy change from code drift and a temporary
 compromise. Preserve consequential discrepancies as questions or corrections,
-with truthful relationships to the existing assumption. Use
-`propose_status_change` for reasoning that no longer holds. Do not invent a
+with truthful relationships to the existing assumption. Four verbs change a node already in the record: `edit_node` for the same claim
+in better words, `replace_node` when a new belief takes over (it records what
+took over, which a retirement cannot), `retire_node` when nothing does, and
+`restore_node` to bring a retired or replaced node back. Retire and restore require a
+reason that explains what changed; a restatement of the action is refused.
+An artifact's new version is a publication, not `replace_node`; reserve
+`replace_node` for a genuinely different artifact taking over. Do not invent a
 settled rationale merely because implementation is easy. Discussion refines
 these same proposals; it creates no separate report-approval step.
 
-Proposals remain editable before commitment: `edit_proposed_node` and
-`edit_proposed_edge` refine them; `apply_proposal_action` stages, unstages, or
+Proposals remain editable before commitment: `update_proposed_node` and
+`update_proposed_edge` refine them; `apply_proposal_action` stages, unstages, or
 discards selected work. Honor staging warnings, including degraded duplicate
 review: successful staging does not imply every duplicate check succeeded.
 A stage receipt's `inferred_edge_proposal_ids` identifies lineage added by the
@@ -67,6 +72,16 @@ never cancels its task. Closing the last live branch leaves task status
 unchanged. Offer `cancel_task` only if the direction itself is dead. Reopening
 a closed branch is done from the web app.
 
+## Read the staged outcome
+
+Staging returns one structured graph-change preview. Read the before/after
+facts, inspect omitted material with `read_review_preview`, and explain their
+significance in the user's context. Retirement does not revive an older
+belief and preview does not create follow-up proposals. Restore only when the
+user's intent authorizes it; no second confirmation is needed for intent
+already stated. For a merge, read `read_review_preview(mode="merge")` so the
+stamp covers the destination outcome, and pass that stamp to approval and merge.
+
 ## Commit the reviewed bundle
 
 A natural stopping point can justify preserving supported understanding on the
@@ -83,7 +98,7 @@ open. Neither carries node, proposal, or Dream-Commit ids, bundle listings, or
 the Dream-Commit id belongs in your git commits and PR text.
 
 1. Call `prepare_commit`. Read the returned `bundle` and retain
-   `commit_draft_id` and `commit_draft_version`. The bundle covers staged
+   `commit_draft_id` and `review_stamp`. The bundle covers staged
    proposals in draft order and is capped at 50. Inspect the full proposal
    payloads needed to judge every current draft member; labels alone do not
    establish that its actual content is supported. Use the focused reads below
@@ -92,7 +107,7 @@ the Dream-Commit id belongs in your git commits and PR text.
    `apply_proposal_action` and prepare again. Never commit other contributors'
    pending work merely because it happened to be staged.
 3. Call `commit_changes` with that exact `commit_draft_id`, mapping the
-   returned `commit_draft_version` to its `expected_draft_version` argument.
+   returned `review_stamp` to its `expected_review_stamp` argument.
    No session tracks or refreshes the stamp for an external caller.
 
 For each known draft proposal ID, use `search_proposals` in the same branch
@@ -113,7 +128,7 @@ Do not commit while any draft member or its material remains uninspected, or
 when capped reads prevent establishing complete coverage. If membership or
 content changed during inspection, prepare again and inspect the updated draft.
 
-On `commit_draft_version_conflict`, reread and prepare the changed draft;
+On `review_changed`, reread and prepare the changed draft;
 never retry an old stamp. `committed_since_prepare` means the branch already
 committed, not that another session's receipt belongs to this caller. Inspect
 current state before taking the next action. Editing or curation after
